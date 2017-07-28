@@ -39,3 +39,11 @@ luac.out
 *.x86_64
 *.hex
 
+# data, model
+mix_*
+model*
+output*
+
+# old file
+*.lua~
+*.sh~
