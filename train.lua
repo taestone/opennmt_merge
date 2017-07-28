@@ -71,7 +71,7 @@ local function buildData(opt, dataset)
     local srcVocSize
     local srcFeatSize = '-'
     if dataset.dicts.src then
-      srcVocSize = dataset.dicts.src.words:size()
+      srcVocSize = dataset.dicts.src.words:getRealsize()
       srcFeatSize = #dataset.dicts.src.features
     else
       srcVocSize = '*'..dataset.dicts.srcInputSize
@@ -79,7 +79,7 @@ local function buildData(opt, dataset)
     local tgtVocSize
     local tgtFeatSize = '-'
     if dataset.dicts.tgt then
-      tgtVocSize = dataset.dicts.tgt.words:size()
+      tgtVocSize = dataset.dicts.tgt.words:getRealsize()
       tgtFeatSize = #dataset.dicts.tgt.features
     else
       tgtVocSize = '*'..dataset.dicts.tgtInputSize
@@ -89,7 +89,7 @@ local function buildData(opt, dataset)
     _G.logger:info(' * additional features: source = %s; target = %s',
                    srcFeatSize, tgtFeatSize)
   else
-    _G.logger:info(' * vocabulary size: %d', dataset.dicts.src.words:size())
+    _G.logger:info(' * vocabulary size: %d', dataset.dicts.src.words:getRealsize())
     _G.logger:info(' * additional features: %d', #dataset.dicts.src.features)
   end
   _G.logger:info(' * maximum sequence length: source = %d; target = %d',

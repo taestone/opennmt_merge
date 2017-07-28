@@ -101,7 +101,7 @@ local function main()
     data.dicts.tgt = Vocabulary.init('target',
                                      tgt_file,
                                      opt.tgt_vocab,
-                                     opt.tgt_vocab_size,
+                                     opt.tgt_vocab_size or opt.vocab_size,
                                      opt.tgt_words_min_frequency,
                                      opt.features_vocabs_prefix,
                                      function(s) return isValid(s, opt.tgt_seq_length) end,

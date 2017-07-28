@@ -20,7 +20,8 @@ end
 
 --[[ Return the number of entries in the dictionary. ]]
 function Dict:size()
-  return #self.idxToLabel
+  --return #self.idxToLabel
+  return self:getRealsize()
 end
 
 --[[ Return the number of entries in the dictionary. ]]
@@ -164,7 +165,7 @@ end
 
 --[[ Return a new dictionary with the `size` most frequent entries. ]]
 function Dict:prune(size, preserve_idx)
-  if size >= self:size()-#self.special then
+  if size >= self:getRealsize()-#self.special then
     return self
   end
 
@@ -212,7 +213,7 @@ function Dict:prune(size, preserve_idx)
       end
       sum_new_freq = sum_new_freq + self.frequencies[idx]
       count = count + 1
-      --_G.logger:info('count: ' .. count .. 'idx: ' .. idx .. 'freq :' .. self.frequencies[idx] .. 'label' .. self.idxToLabel[idx])
+      --_G.logger:info('count: ' .. count .. 'idx: ' .. idx .. 'freq :' .. self.frequencies[idx] .. 'label' .. self.idxToLabel[idx] .. 'size: ' .. size)
     end
   end
 

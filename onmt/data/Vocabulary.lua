@@ -183,7 +183,7 @@ function Vocabulary.init(name, dataFile, vocabFile, vocabSize, wordsMinFrequency
     end
 
 
-    local originalSizes = { genWordVocab:size() }
+    local originalSizes = { genWordVocab:getRealsize() }
     for i = 1, #genFeaturesVocabs do
       table.insert(originalSizes, genFeaturesVocabs[i]:size())
     end
