@@ -66,7 +66,7 @@ function Vocabulary.make(filename, validFunc, idxFile)
   return wordVocab, featuresVocabs
 end
 
-    -- merge pre-load wordVocab and data file voacb
+    -- merge old wordVocab and vocab from new text file (idx preserve)
 function Vocabulary.merge(filename, validFunc, idxFile, wordVocab)
 
   local featuresVocabs = {}
@@ -74,9 +74,10 @@ function Vocabulary.merge(filename, validFunc, idxFile, wordVocab)
   local reader = onmt.utils.FileReader.new(filename, idxFile)
   local lineId = 0
 
-  -- reset frequencies to 0 except PAD, UNK, EOS, BOS
+  -- reset frequencies to 0 except PAD, UNK, EOS, BOS in old wordVocab
   wordVocab:resetFrequencies()
 
+  -- after reset, count frequency in new text file
   while true do
     local sent = reader:next()
     if sent == nil then
@@ -171,9 +172,9 @@ function Vocabulary.init(name, dataFile, vocabFile, vocabSize, wordsMinFrequency
     _G.logger:info(' * Building ' .. name  .. ' vocabularies...')
 
     local genWordVocab, genFeaturesVocabs
-    local tmp1, tmp2 
+    local tmp1
     if vocabFile:len() > 0 then
-      _G.logger:info(' * Mergebefore ' .. loadVocab:size() .. ' ' .. name .. ' words')
+      _G.logger:info(' * Merge before ' .. loadVocab:getRealsize() .. ' ' .. name .. ' words')
       tmp1, genFeaturesVocabs  = Vocabulary.merge(dataFile, validFunc, idxFile, loadVocab)
       _G.logger:info(' * Merge ' .. tmp1:getRealsize() .. ' ' .. name .. ' words')
       genWordVocab = tmp1:compactZeroFrequencies()
@@ -195,6 +196,7 @@ function Vocabulary.init(name, dataFile, vocabFile, vocabSize, wordsMinFrequency
 
     if wordVocab == nil then
       if wordsMinFrequency[1] > 0 then
+        -- TODO: Tensor not available for frequency. change pruneByMinFrequency removing Tensor
         if vocabFile:len() > 0 then
           wordVocab = genWordVocab:pruneByMinFrequency(wordsMinFrequency[1], true )
         else

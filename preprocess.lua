@@ -164,10 +164,12 @@ local function main()
       Vocabulary.saveFeatures('target', data.dicts.tgt.features, opt.save_data)
     end
   else
+    -- save merged dict (always save dict)
     --if opt.src_vocab:len() == 0 then
     Vocabulary.save('source', data.dicts.src.words, opt.save_data .. '.src.dict')
     --end
 
+    -- save merged dict (always save dict)
     --if opt.tgt_vocab:len() == 0 then
     Vocabulary.save('target', data.dicts.tgt.words, opt.save_data .. '.tgt.dict')
     --end

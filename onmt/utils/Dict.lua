@@ -21,6 +21,7 @@ end
 --[[ Return the number of entries in the dictionary. ]]
 function Dict:size()
   --return #self.idxToLabel
+  -- alway return Realsize (not getn)
   return self:getRealsize()
 end
 
@@ -36,7 +37,8 @@ end
 --[[ Load entries from a file. ]]
 function Dict:loadFile(filename)
   local reader = onmt.utils.FileReader.new(filename)
-  
+
+  -- add specials to dict (it you have other specials, plze insert here
   self:addSpecials({onmt.Constants.PAD_WORD, onmt.Constants.UNK_WORD, 
 					onmt.Constants.BOS_WORD, onmt.Constants.EOS_WORD})
 
@@ -65,13 +67,13 @@ function Dict:getSortIdx()
   end
   table.sort(sort_idx,function(a,b) return a.idx < b.idx end)
   return sort_idx
-
 end
 
 --[[ Write entries to a file. ]]
 function Dict:writeFile(filename)
   local file = assert(io.open(filename, 'w'))
 
+  -- get sorted IdxToLabel and write it file (preserve idx and order)
   for _,line in ipairs(self:getSortIdx()) do
     i = line.idx
 	label = line.label
@@ -168,6 +170,8 @@ function Dict:prune(size, preserve_idx)
   if size >= self:getRealsize()-#self.special then
     return self
   end
+  -- frequnecy change from sequence list to hash list
+  -- so handling changed from Tensor to sort hash
 
   -- Only keep the `size` most frequent entries.
   -- for idx,label in pairs(self.idxToLabel) do
@@ -181,8 +185,10 @@ function Dict:prune(size, preserve_idx)
   sort_freq = {}
   for idx,freq in pairs(self.frequencies) do
           table.insert(sort_freq,{idx=idx, freq=freq})
+          -- sum old freq
           sum_old_freq = sum_old_freq + freq
   end
+  -- sort by freq
   table.sort(sort_freq,function(a,b) return a.freq > b.freq end)
 
   local newDict = Dict.new()
@@ -240,7 +246,7 @@ function Dict:prune(size, preserve_idx)
 end
 
 --[[ Return a new dictionary with entries appearing at least `minFrequency` times. ]]
--- TODO: apply  compact result to dict 
+-- TODO: remove Tensor handle(frequnecies is not sequence of list) (see prune function)
 function Dict:pruneByMinFrequency(minFrequency, preserve_idx)
   if minFrequency < 2 then
     return self
@@ -284,6 +290,9 @@ function Dict:resetFrequencies()
   --  local idx = self.labelToIdx[token]
   --  _G.logger:info('idx: ' .. idx .. 'freq :' .. self.frequencies[idx] .. 'label' .. token)
   --end
+
+  -- after specials (unk, eos, bos, pad)
+  -- reset frequnecies to 0
   for i = 5, self:size() do
     local token = self.idxToLabel[i]
     local idx = self.labelToIdx[token]
@@ -296,7 +305,7 @@ function Dict:resetFrequencies()
 
 end
 
---[[ Left elments which frequencies is bigger 0 ]]
+--[[ Only Leave elements which frequencies is bigger 0 ]]
 function Dict:compactZeroFrequencies()
   local newDict = Dict.new()
 
