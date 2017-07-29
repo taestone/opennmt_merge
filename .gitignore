@@ -40,9 +40,9 @@ luac.out
 *.hex
 
 # data, model
-mix_1*
+mix_1000*
 models/*
-output*
+output/*
 
 # old file
 *.lua~
